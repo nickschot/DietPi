@@ -34,31 +34,40 @@ Apply_Memory_Split(){
 
 	#Kodi / RetroPie
 	if [ "$KODI" = 2 ] || [ "$RETROPIE" = 2 ]; then
+
 		#odroid c1
 		sed -i '/setenv hdmioutput /c\setenv hdmioutput "1"' /boot/boot.ini
 		sed -i '/setenv vpu /c\setenv vpu "1"' /boot/boot.ini
+
 		#rpi
 		sed -i '/gpu_mem_256=/c\gpu_mem_256=128' /boot/config.txt
 		sed -i '/gpu_mem_512=/c\gpu_mem_512=192' /boot/config.txt
 		sed -i '/gpu_mem_1024=/c\gpu_mem_1024=256' /boot/config.txt
+		sed -i "/rpi_hdmi_output=/c\rpi_hdmi_output=1" /boot/dietpi.txt
 	#Desktop
 	elif [ "$DESKTOP" = 2 ]; then
+
 		#odroid c1
 		sed -i '/setenv hdmioutput /c\setenv hdmioutput "1"' /boot/boot.ini
 		sed -i '/setenv vpu /c\setenv vpu "1"' /boot/boot.ini
+
 		#rpi
 		sed -i '/gpu_mem_256=/c\gpu_mem_256=64' /boot/config.txt
 		sed -i '/gpu_mem_512=/c\gpu_mem_512=128' /boot/config.txt
 		sed -i '/gpu_mem_1024=/c\gpu_mem_1024=128' /boot/config.txt
+		sed -i "/rpi_hdmi_output=/c\rpi_hdmi_output=1" /boot/dietpi.txt
 	#Server
 	else
+
 		#odroid c1
 		sed -i '/setenv hdmioutput /c\setenv hdmioutput "1"' /boot/boot.ini
 		sed -i '/setenv vpu /c\setenv vpu "0"' /boot/boot.ini
+
 		#rpi
 		sed -i '/gpu_mem_256=/c\gpu_mem_256=16' /boot/config.txt
 		sed -i '/gpu_mem_512=/c\gpu_mem_512=16' /boot/config.txt
 		sed -i '/gpu_mem_1024=/c\gpu_mem_1024=16' /boot/config.txt
+		#HDMI output, use user setting, dont change | sed -i "/rpi_hdmi_output=/c\rpi_hdmi_output=1" /boot/dietpi.txt
 	fi
 
 }
@@ -120,7 +129,6 @@ Write_InstallFileList(){
 
 	rm /boot/dietpi/.installed
 	
-	#DietPi	
 	echo -e "#DietPi External Drive" >> /boot/dietpi/.installed
 	echo -e "USBDRIVE $USBDRIVE" >> /boot/dietpi/.installed
 	
@@ -138,8 +146,7 @@ Write_InstallFileList(){
 	echo -e "NOIPDYNDNS $NOIPDYNDNS" >> /boot/dietpi/.installed
 	echo -e "SMBSERVER $SMBSERVER" >> /boot/dietpi/.installed
 
-	#Linux
-	echo -e "#Linux" >> /boot/dietpi/.installed
+	echo -e "#Additional Linux Software" >> /boot/dietpi/.installed
 	echo -e "VIMFULL $VIMFULL" >> /boot/dietpi/.installed
 	echo -e "SSHCLIENT $SSHCLIENT" >> /boot/dietpi/.installed
 	echo -e "SMBCLIENT $SMBCLIENT" >> /boot/dietpi/.installed
@@ -785,7 +792,7 @@ TARGETMENUID=0
 Menu_Main(){
 
     WHIP_TITLE='---------- DietPi - Software Setup ----------'
-    OPTION=$(whiptail --title "$WHIP_TITLE" --menu " Hardware Detected : $HW_MODEL_DESCRIPTION" --cancel-button "Exit Setup" 15 60 4 \
+    OPTION=$(whiptail --title "$WHIP_TITLE" --menu " Hardware Detected : $HW_MODEL_DESCRIPTION" --cancel-button "Exit Setup" 13 60 4 \
     "1" "Select DietPi Optimized Software" \
     "2" "Select Additional Linux Software" \
     "3" "DietPi-Config" \

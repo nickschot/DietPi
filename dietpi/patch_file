@@ -96,6 +96,32 @@ elif [ "$VERSION_CURRENT" = 33 ]; then
 	
 elif [ "$VERSION_CURRENT" = 34 ]; then
 	echo -e "34 > 35 patch"
+	
+	#RPi - Fix locales wont change from en_GB
+	if (( $DISTRO == 1 )); then
+	
+		#Remove the locale override that was used to resolve incorrect UTF8 characters in SSH.
+		rm /etc/profile.d/lang.sh
+		
+		#Add locale export to bash.bashrc
+		echo -e "\n#Apply system locale" >> /etc/bash.bashrc
+		echo -e 'export $(cat /etc/default/locale | grep LANG=)' >> /etc/bash.bashrc
+	
+	fi
+elif [ "$VERSION_CURRENT" = 35 ]; then
+	echo -e "35 > 36 patch"
+	
+	#RPi install fbset (used by dietpi-config with headless display option)
+	if (( $DISTRO == 1 )); then
+		apt-get install fbset -y
+		
+		#Add to dietpi.txt
+		if (($(cat /boot/dietpi.txt | grep -ci -m1 'rpi_hdmi_output=') == 0)); then
+			echo -e "\n# RPi Hdmi output (if 0, sets tvservice -o and framebuffer 16x16 on boot, headless)" >> /boot/dietpi.txt
+			echo -e "rpi_hdmi_output=1" >> /boot/dietpi.txt
+		fi
+	fi
+	
 fi
 
 sleep 2
